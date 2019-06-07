@@ -1,0 +1,3 @@
+[submodule "m-epics-nblm"]
+	path = m-epics-nblm
+	url = https://bitbucket.org/europeanspallationsource/m-epics-nblm
