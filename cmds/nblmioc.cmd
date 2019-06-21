@@ -12,6 +12,7 @@ require nblmplc, master
 require nblmapp, 1.0.5
 require nds3epics,1.0.0
 require modbus,2.11.0p
+require s7plc,1.4.0p
 
 epicsEnvSet(ACQ_IFC1410,    "ICS tag 345")
 epicsEnvSet(AREA,           "$(AREA=CEA)")  # default prefix is "CEA"
