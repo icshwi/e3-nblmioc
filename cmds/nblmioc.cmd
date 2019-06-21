@@ -9,7 +9,7 @@ require nblmioc, master
 # save and restore a specific config
 require saverestore, master
 require nblmplc, master
-require nblmapp, 1.0.5
+require nblmapp, develop
 require nds3epics,1.0.0
 require modbus,2.11.0p
 require s7plc,1.4.0p
