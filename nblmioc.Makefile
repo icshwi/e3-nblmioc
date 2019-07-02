@@ -50,6 +50,10 @@ ifneq ($(strip $(SAVERESTORE_DEP_VERSION)),)
 asyn_VERSION=$(SAVERESTORE_DEP_VERSION)
 endif
 
+ifneq ($(strip $(AUTOSAVE_DEP_VERSION)),)
+asyn_VERSION=$(AUTOSAVE_DEP_VERSION)
+endif
+
 ifneq ($(strip $(NBLMPLC_DEP_VERSION)),)
 asyn_VERSION=$(NBLMPLC_DEP_VERSION)
 endif
@@ -115,6 +119,7 @@ SOURCES   += $(wildcard $(APPSRC)/*.c)
 # # DBDINC_SRCS should be last of the series of SOURCES
 # SOURCES += $(DBDINC_SRCS)
 
+DBDS      += $(APPSRC)/nblmioc_asub.dbd
 # DBDS += $(APPSRC)/calcSupport_LOCAL.dbd
 # DBDS += $(APPSRC)/calcSupport_withSNCSEQ.dbd
 # DBDS += $(APPSRC)/calcSupport_withSSCAN.dbd
