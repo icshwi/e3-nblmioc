@@ -200,13 +200,11 @@ dbLoadRecords("SaveRestoreC.template", PREFIX="${AREA}:${DEVICE}-saveRestore-LV"
 dbLoadRecords("SaveRestoreC.template", PREFIX="${AREA}:${DEVICE}-saveRestore-GAS")
 dbLoadRecords("SaveRestoreC.template", PREFIX="${AREA}:${DEVICE}-saveRestore-ND")
 
-#-----------------------------------------------------------
-# configure autosave  
-#-----------------------------------------------------------
+#############################################################################################################################################################################################################
+# configure autosave
+#############################################################################################################################################################################################################
 # debug level
 save_restoreSet_Debug(0)
-# Number of sequenced backup files to write
-# save_restoreSet_NumSeqFiles(1)
 
 # Specify directories in which to search for request files. This requested file (.req) is containing PVs name to autosave.
 set_requestfile_path("/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/autosave/","")
@@ -217,29 +215,28 @@ set_savefile_path("/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/autosave
 # Specify which saved files should be restored
 ## gas + ND + HV + LV
 # hardware connection layer
-set_pass0_restoreFile("nblm_autosave_hardware_connection_layer.sav")
+set_pass1_restoreFile("nblm_autosave_hardware_connection_layer.sav")
 # hardware abstraction layer
-set_pass0_restoreFile("nblm_autosave_hardware_abstraction_layer.sav")
+set_pass1_restoreFile("nblm_autosave_hardware_abstraction_layer.sav")
 #############################################################################################################################################################################################################
 
 
 iocInit
 
-
 #############################################################################################################################################################################################################
-# Start autosave
+# Start autosave task
 #############################################################################################################################################################################################################
 # create_monitor_set(char *request_file, int period, char *macrostring)
 # file containing PVs to autosave
 # period: periodic autosave if PV has changed
 # macrostring: macro for the req file
 ## gas + ND + HV + LV
-# hardware connection layer
-create_monitor_set("nblm_autosave_hardware_connection_layer.req", 1, "AREA=${AREA}, DEVICE=${DEVICE}")
+# hardware connection layer.
+# 2nd parameter : Save every <time> seconds, if any of the PVs named in the file <name>.req have changed value since the last write
+create_monitor_set("nblm_autosave_hardware_connection_layer.req", 5, "AREA=${AREA}, DEVICE=${DEVICE}")
 # hardware abstraction layer
-create_monitor_set("nblm_autosave_hardware_abstraction_layer.req", 1, "AREA=${AREA}, DEVICE=${DEVICE}")
+create_monitor_set("nblm_autosave_hardware_abstraction_layer.req", 5, "AREA=${AREA}, DEVICE=${DEVICE}")
 #############################################################################################################################################################################################################
-
 
 
 
