@@ -5,7 +5,7 @@
 require nblmioc, master
 
 # autosave
-#require autosave, 5.7.0
+require autosave, 5.9.0
 # save and restore a specific config
 require saverestore, master
 require nblmplc, master
@@ -195,8 +195,10 @@ dbLoadRecords("nblm_detector.db", "AREA=${AREA}, DEVICE=${DEVICE}, NBLM_IDX=${NB
 #############################################################################################################################################################################################################
 # configure save and restore (Alexis Gaget)
 #############################################################################################################################################################################################################
-SaveRestoreConfigure("$(REQUIRE_SaveRestore_PATH)")
 dbLoadRecords("SaveRestoreC.template", PREFIX="${AREA}:${DEVICE}-saveRestore-HV")
+dbLoadRecords("SaveRestoreC.template", PREFIX="${AREA}:${DEVICE}-saveRestore-LV")
+dbLoadRecords("SaveRestoreC.template", PREFIX="${AREA}:${DEVICE}-saveRestore-GAS")
+dbLoadRecords("SaveRestoreC.template", PREFIX="${AREA}:${DEVICE}-saveRestore-ND")
 
 #-----------------------------------------------------------
 # configure autosave  
@@ -207,10 +209,10 @@ save_restoreSet_Debug(0)
 # save_restoreSet_NumSeqFiles(1)
 
 # Specify directories in which to search for request files. This requested file (.req) is containing PVs name to autosave.
-set_requestfile_path("/home/iocuser/devspace/m-epics-nblm/misc/autosave/","")
+set_requestfile_path("/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/autosave/","")
 
 # specify where save files should be (.sav)
-set_savefile_path("/home/iocuser/devspace/m-epics-nblm/misc/autosave/", "data/")
+set_savefile_path("/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/autosave/", "data/")
 
 # Specify which saved files should be restored
 ## gas + ND + HV + LV
@@ -243,17 +245,17 @@ create_monitor_set("nblm_autosave_hardware_abstraction_layer.req", 1, "AREA=${AR
 
 ## saveRestore paths
 # HV
-dbpf ${AREA}:${DEVICE}-saveRestore-HV:PathReq "/home/iocuser/devspace/m-epics-nblm/misc/saveAndRestore/HV_config.req"
-dbpf ${AREA}:${DEVICE}-saveRestore-HV:PathSav "/home/iocuser/devspace/m-epics-nblm/misc/saveAndRestore/HV_config.sav"
+dbpf ${AREA}:${DEVICE}-saveRestore-HV:PathReq "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/HV_config.req"
+dbpf ${AREA}:${DEVICE}-saveRestore-HV:PathSav "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/HV_config.sav"
 # LV
-dbpf ${AREA}:${DEVICE}-saveRestore-LV:PathReq "/home/iocuser/devspace/m-epics-nblm/misc/saveAndRestore/LV_config.req"
-dbpf ${AREA}:${DEVICE}-saveRestore-LV:PathSav "/home/iocuser/devspace/m-epics-nblm/misc/saveAndRestore/LV_config.sav"
+dbpf ${AREA}:${DEVICE}-saveRestore-LV:PathReq "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/LV_config.req"
+dbpf ${AREA}:${DEVICE}-saveRestore-LV:PathSav "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/LV_config.sav"
 # gas
-dbpf ${AREA}:${DEVICE}-saveRestore-GAS:PathReq "/home/iocuser/devspace/m-epics-nblm/misc/saveAndRestore/GAS_config.req"
-dbpf ${AREA}:${DEVICE}-saveRestore-GAS:PathSav "/home/iocuser/devspace/m-epics-nblm/misc/saveAndRestore/GAS_config.sav"
+dbpf ${AREA}:${DEVICE}-saveRestore-GAS:PathReq "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/GAS_config.req"
+dbpf ${AREA}:${DEVICE}-saveRestore-GAS:PathSav "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/GAS_config.sav"
 # neutron detection
-dbpf ${AREA}:${DEVICE}-saveRestore-ND:PathReq "/home/iocuser/devspace/m-epics-nblm/misc/saveAndRestore/ND_config.req"
-dbpf ${AREA}:${DEVICE}-saveRestore-ND:PathSav "/home/iocuser/devspace/m-epics-nblm/misc/saveAndRestore/ND_config.sav"
+dbpf ${AREA}:${DEVICE}-saveRestore-ND:PathReq "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/ND_config.req"
+dbpf ${AREA}:${DEVICE}-saveRestore-ND:PathSav "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/ND_config.sav"
 
 
 # neutron detection and scope configuration
