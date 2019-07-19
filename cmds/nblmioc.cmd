@@ -39,6 +39,7 @@ dbLoadRecords("CAEN_nblm.db", "AREA=${AREA}, DEVICE=${DEVICE}, HV_LV_PREFIX=${HV
 
 ## -- S7PLC --
 #s7plcConfigure("plcName",     "ip",          port, inByte, outByte, bigEndian, recTimeout, sendIntervall)
+# NEXT LINE IS COPIED FROM e3-nblmplc/cmds/nblmplc.cmd
 s7plcConfigure("ESS_NBLM_PLC","10.2.176.36",2000,534,0,1,500,100)
 # var s7plcDebug 0
 
@@ -55,6 +56,7 @@ s7plcConfigure("ESS_NBLM_PLC","10.2.176.36",2000,534,0,1,500,100)
 #noAutoConnect flag is set to 0 so that asynManager will do normal automatic connection management
 #noProcessEos flag is set to 1 because Modbus over TCP does not require end-of-string processing
 
+# NEXT LINES ARE COPIED FROM e3-nblmplc/cmds/nblmplc.cmd
 drvAsynIPPortConfigure("ESS_NBLM_PLC509",		"10.2.176.36:509",0,0,1)
 drvAsynIPPortConfigure("ESS_NBLM_PLC502",		"10.2.176.36:502",0,0,1)
 drvAsynIPPortConfigure("ESS_NBLM_PLC503",		"10.2.176.36:503",0,0,1)
@@ -69,6 +71,7 @@ drvAsynIPPortConfigure("ESS_NBLM_PLC508",		"10.2.176.36:508",0,0,1)
 # timeoutMsec: The timeout in milliseconds for write and read
 # writeDelayMsec: delay in milliseconds before each write from EPICS to the device (only needed for Serial RTU devices, default is 0)
 
+# NEXT LINES ARE COPIED FROM e3-nblmplc/cmds/nblmplc.cmd
 modbusInterposeConfig("ESS_NBLM_PLC509",0,1000,0)
 modbusInterposeConfig("ESS_NBLM_PLC502",0,1000,0)
 modbusInterposeConfig("ESS_NBLM_PLC503",0,1000,0)
@@ -97,21 +100,23 @@ modbusInterposeConfig("ESS_NBLM_PLC508",0,1000,0)
 # modbusFunction = 16 : Write Multiple Holding Registers (2 bytes = one word) (write AS)
 # pollMsec: For write functions, a non-zero value means that the Modbus data should be read once when the port driver is first created.
 #
-#			portName,				tcpPortName,			slaveAddr,	modbusFct,	addr,			length,		dataType,	pollMsec,	plcType,
-drvModbusAsynConfigure("ESS_NBLM_PLC502_AS_WRITE_0",		"ESS_NBLM_PLC502",		1,		16,		0,			40,		8,		1,		"SIEMENS")
-drvModbusAsynConfigure("ESS_NBLM_PLC508_AS_WRITE_0",		"ESS_NBLM_PLC508",		1,		16,		0,			6,		4,		1,		"SIEMENS")
-drvModbusAsynConfigure("ESS_NBLM_PLC509_AS_WRITE_0",		"ESS_NBLM_PLC509",		1,		16,		0,			2,		8,		1,		"SIEMENS")
-drvModbusAsynConfigure("ESS_NBLM_PLC503_AS_WRITE_0",		"ESS_NBLM_PLC503",		1,		16,		0,			40,		8,		1,		"SIEMENS")
-drvModbusAsynConfigure("ESS_NBLM_PLC504_AS_WRITE_0",		"ESS_NBLM_PLC504",		1,		16,		0,			40,		8,		1,		"SIEMENS")
-drvModbusAsynConfigure("ESS_NBLM_PLC507_AS_WRITE_0",		"ESS_NBLM_PLC507",		1,		16,		0,			40,		8,		1,		"SIEMENS")
-drvModbusAsynConfigure("ESS_NBLM_PLC505_AS_WRITE_0",		"ESS_NBLM_PLC505",		1,		16,		0,			40,		8,		1,		"SIEMENS")
-drvModbusAsynConfigure("ESS_NBLM_PLC506_AS_WRITE_0",		"ESS_NBLM_PLC506",		1,		16,		0,			40,		8,		1,		"SIEMENS")
-drvModbusAsynConfigure("ESS_NBLM_PLC502_TS_WRITE_4000",		"ESS_NBLM_PLC502",		1,		5,		4000,		1640,	0,		1,		"SIEMENS")
-drvModbusAsynConfigure("ESS_NBLM_PLC502_TS_WRITE_6400",		"ESS_NBLM_PLC502",		1,		5,		6400,		1640,	0,		1,		"SIEMENS")
-drvModbusAsynConfigure("ESS_NBLM_PLC502_TS_WRITE_8800",		"ESS_NBLM_PLC502",		1,		5,		8800,		3,		0,		1,		"SIEMENS")
+# NEXT LINES ARE COPIED FROM e3-nblmplc/cmds/nblmplc.cmd
+#					    portName,	                        tcpPortName,	        slaveAddr,	modbusFct,	addr,	length,	dataType,	pollMsec,	plcType,
+drvModbusAsynConfigure("ESS_NBLM_PLC502_AS_WRITE_0",		"ESS_NBLM_PLC502",		1,			16,			0,		40,		8,			1,			"SIEMENS")
+drvModbusAsynConfigure("ESS_NBLM_PLC508_AS_WRITE_0",		"ESS_NBLM_PLC508",		1,			16,			0,		6,		4,			1,			"SIEMENS")
+drvModbusAsynConfigure("ESS_NBLM_PLC509_AS_WRITE_0",		"ESS_NBLM_PLC509",		1,			16,			0,		2,		8,			1,			"SIEMENS")
+drvModbusAsynConfigure("ESS_NBLM_PLC503_AS_WRITE_0",		"ESS_NBLM_PLC503",		1,			16,			0,		40,		8,			1,			"SIEMENS")
+drvModbusAsynConfigure("ESS_NBLM_PLC504_AS_WRITE_0",		"ESS_NBLM_PLC504",		1,			16,			0,		40,		8,			1,			"SIEMENS")
+drvModbusAsynConfigure("ESS_NBLM_PLC507_AS_WRITE_0",		"ESS_NBLM_PLC507",		1,			16,			0,		40,		8,			1,			"SIEMENS")
+drvModbusAsynConfigure("ESS_NBLM_PLC505_AS_WRITE_0",		"ESS_NBLM_PLC505",		1,			16,			0,		40,		8,			1,			"SIEMENS")
+drvModbusAsynConfigure("ESS_NBLM_PLC506_AS_WRITE_0",		"ESS_NBLM_PLC506",		1,			16,			0,		40,		8,			1,			"SIEMENS")
+drvModbusAsynConfigure("ESS_NBLM_PLC502_TS_WRITE_4000",		"ESS_NBLM_PLC502",		1,			5,			4000,	1640,	0,			1,			"SIEMENS")
+drvModbusAsynConfigure("ESS_NBLM_PLC502_TS_WRITE_6400",		"ESS_NBLM_PLC502",		1,			5,			6400,	1640,	0,			1,			"SIEMENS")
+drvModbusAsynConfigure("ESS_NBLM_PLC502_TS_WRITE_8800",		"ESS_NBLM_PLC502",		1,			5,			8800,	3,		0,			1,			"SIEMENS")
 #=======================================================
     
 # load database
+# NEXT LINE IS COPIED FROM e3-nblmplc/cmds/nblmplc.cmd
 dbLoadRecords("iocEss_nblm.db")
 #############################################################################################################################################################################################################
 
