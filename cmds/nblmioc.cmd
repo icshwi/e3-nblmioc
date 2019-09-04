@@ -160,7 +160,7 @@ epicsEnvSet(AREA,               "$(AREA=CEA)")
 epicsEnvSet(TYPE,               "SLOW") # FAST
 epicsEnvSet(NBLM_IDX,           "1")
 # ACQ (RO)
-epicsEnvSet(ACQ_AREA,           "$(PREFIX)")
+epicsEnvSet(ACQ_AREA,           "FEBx")
 epicsEnvSet(ACQ_DEVICE,         "$(DEVICE)")
 epicsEnvSet(ACQ_CH,             "CH0")
 # HV (R/W)
@@ -247,4 +247,5 @@ dbpf ${AREA}:${DEVICE}-saveRestore-ND:PathSav "/home/ceauser/e3-3.15.5/e3-nblmio
 # neutron detection and scope configuration
 # Pulse processing
 dbpf ${PREFIX}:${DEVICE}-STAT "ON"
+
 
