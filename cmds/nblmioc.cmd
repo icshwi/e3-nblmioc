@@ -16,17 +16,27 @@ require s7plc,1.4.0p
 epicsEnvSet(ACQ_IFC1410,    "ICS tag 345")
 epicsEnvSet(AREA,           "$(AREA=CEA)")  # default prefix is "CEA"
 epicsEnvSet(DEVICE,         "PBI-nBLM")
-epicsEnvSet(HV_LV_PREFIX,   "SY4527")       # service name of HV/LV
-
+epicsEnvSet(HV_LV_PREFIX,   "SY4527")
 
 #### hardware connection layer
 
 #############################################################################################################################################################################################################
 ### CAEN power supply (HV + LV)
 #############################################################################################################################################################################################################
-epicsEnvSet(LV_SLOT,        "10")           # only one LV board for CEA teststand
-epicsEnvSet(HV_SLOT,        "02")           # only one HV board for CEA teststand
-dbLoadRecords("CAEN_nblm.db", "AREA=${AREA}, DEVICE=${DEVICE}, HV_LV_PREFIX=${HV_LV_PREFIX}, LV_SLOT=${LV_SLOT}, HV_SLOT=${HV_SLOT}")
+
+# CAEN crate (touchscreen)
+dbLoadRecords("CAEN_SY4527_crate.template", "AREA=${AREA}, DEVICE=${DEVICE}, HV_LV_PREFIX="${HV_LV_PREFIX}", CRATE_IDX="1"")       # first crate
+## HV
+dbLoadRecords("CAEN_HV_A7030.db", "AREA=${AREA}, DEVICE=${DEVICE}, HV_LV_PREFIX="${HV_LV_PREFIX}", CRATE_IDX="1", HV_SLOT="02"")
+dbLoadRecords("CAEN_HV_A7030.db", "AREA=${AREA}, DEVICE=${DEVICE}, HV_LV_PREFIX="${HV_LV_PREFIX}", CRATE_IDX="1", HV_SLOT="05"")
+## LV
+dbLoadRecords("CAEN_LV_A2519.db", "AREA=${AREA}, DEVICE=${DEVICE}, HV_LV_PREFIX="${HV_LV_PREFIX}", CRATE_IDX="1", LV_SLOT="10"")
+
+# CAEN crate 2
+dbLoadRecords("CAEN_SY4527_crate.template", "AREA=${AREA}, DEVICE=${DEVICE}, HV_LV_PREFIX="${HV_LV_PREFIX}", CRATE_IDX="2"")   # second crate
+## HV
+dbLoadRecords("CAEN_HV_A7030.db", "AREA=${AREA}, DEVICE=${DEVICE}, HV_LV_PREFIX="${HV_LV_PREFIX}", CRATE_IDX="2", HV_SLOT="15"")
+# #LV
 #############################################################################################################################################################################################################
 
 
@@ -163,19 +173,23 @@ epicsEnvSet(NBLM_IDX,           "1")
 epicsEnvSet(ACQ_AREA,           "FEBx")
 epicsEnvSet(ACQ_DEVICE,         "$(DEVICE)")
 epicsEnvSet(ACQ_CH,             "CH0")
+# CAEN crate
+epicsEnvSet(CRATE_IDX,           "1")
 # HV (R/W)
-epicsEnvSet(HV_MESH_SLOT,       "02")
+epicsEnvSet(HV_SLOT,            "02")
 epicsEnvSet(HV_MESH_CH,         "000")
-epicsEnvSet(HV_DRIFT_SLOT,      "02")
 epicsEnvSet(HV_DRIFT_ch,        "001")
 # LV (RO) 
-epicsEnvSet(LV_CH,              "000")
+epicsEnvSet(LV_POS_SLOT,        "10")
+epicsEnvSet(LV_POS_CH,          "000")  # +8V
+epicsEnvSet(LV_NEG_SLOT,        "10")
+epicsEnvSet(LV_NEG_CH,          "001")  # -8V
 # gas (RO)
 epicsEnvSet(GAS_AREA,           "FEB-050Row")
 epicsEnvSet(GAS_LINE,           "1")
 epicsEnvSet(GAS_DEVICE,         "PBI-PLC-Line") # FEB-050Row:PBI-PLC-Line1
 epicsEnvSet(GAS_DEVICE_INT_VAR, "PBI-FT-A")     # FEB-050Row:PBI-FT-A10:FlwR, FEB-050Row:PBI-FT-A19:FlwR
-dbLoadRecords("nblm_detector.db", "AREA=${AREA}, DEVICE=${DEVICE}, NBLM_IDX=${NBLM_IDX}, TYPE=${TYPE},  HV_MESH_SLOT="${HV_MESH_SLOT}", HV_MESH_CH="${HV_MESH_CH}", HV_DRIFT_SLOT="${HV_DRIFT_SLOT}", HV_DRIFT_CH="${HV_DRIFT_ch}", LV_SLOT=${LV_SLOT}, LV_CH=${LV_CH}, GAS_AREA=${GAS_AREA}, GAS_DEVICE=${GAS_DEVICE}, GAS_DEVICE_INT_VAR=${GAS_DEVICE_INT_VAR}, GAS_LINE=${GAS_LINE}, ACQ_AREA=${ACQ_AREA}, ACQ_DEVICE=${ACQ_DEVICE}, ACQ_IFC1410=${ACQ_IFC1410}, ACQ_CH=${ACQ_CH}") 
+dbLoadRecords("nblm_detector.db", "AREA=${AREA}, DEVICE=${DEVICE}, NBLM_IDX=${NBLM_IDX}, TYPE=${TYPE},  CRATE_IDX=${CRATE_IDX}, HV_SLOT="${HV_SLOT}", HV_MESH_CH="${HV_MESH_CH}", HV_DRIFT_CH="${HV_DRIFT_ch}", LV_POS_SLOT=${LV_POS_SLOT}, LV_NEG_SLOT=${LV_NEG_SLOT}, LV_POS_CH=${LV_POS_CH}, LV_NEG_CH=${LV_NEG_CH}, GAS_AREA=${GAS_AREA}, GAS_DEVICE=${GAS_DEVICE}, GAS_DEVICE_INT_VAR=${GAS_DEVICE_INT_VAR}, GAS_LINE=${GAS_LINE}, ACQ_AREA=${ACQ_AREA}, ACQ_DEVICE=${ACQ_DEVICE}, ACQ_IFC1410=${ACQ_IFC1410}, ACQ_CH=${ACQ_CH}") 
 # fast
 #############################################################################################################################################################################################################
 
