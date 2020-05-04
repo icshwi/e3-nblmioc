@@ -43,19 +43,27 @@ include $(E3_REQUIRE_CONFIG)/DECOUPLE_FLAGS
 #endif
 
 ifneq ($(strip $(NBLMAPP_DEP_VERSION)),)
-asyn_VERSION=$(NBLMAPP_DEP_VERSION)
+nblmapp_VERSION=$(NBLMAPP_DEP_VERSION)
 endif
 
 ifneq ($(strip $(SAVERESTORE_DEP_VERSION)),)
-asyn_VERSION=$(SAVERESTORE_DEP_VERSION)
+saverestore_VERSION=$(SAVERESTORE_DEP_VERSION)
 endif
 
 ifneq ($(strip $(AUTOSAVE_DEP_VERSION)),)
-asyn_VERSION=$(AUTOSAVE_DEP_VERSION)
+autosave_VERSION=$(AUTOSAVE_DEP_VERSION)
 endif
 
 ifneq ($(strip $(NBLMPLC_DEP_VERSION)),)
-asyn_VERSION=$(NBLMPLC_DEP_VERSION)
+nblmplc_VERSION=$(NBLMPLC_DEP_VERSION)
+endif
+
+ifneq ($(strip $(NBLMPOWER_DEP_VERSION)),)
+nblmpower_VERSION=$(NBLMPOWER_DEP_VERSION)
+endif
+
+ifneq ($(strip $(MRFIOC2_DEP_VERSION)),)
+mrfioc2_VERSION=$(MRFIOC2_DEP_VERSION)
 endif
 
 ## Exclude linux-ppc64e6500
@@ -119,7 +127,6 @@ SOURCES   += $(wildcard $(APPSRC)/*.c)
 # # DBDINC_SRCS should be last of the series of SOURCES
 # SOURCES += $(DBDINC_SRCS)
 
-DBDS      += $(APPSRC)/nblmioc_asub.dbd
 # DBDS += $(APPSRC)/calcSupport_LOCAL.dbd
 # DBDS += $(APPSRC)/calcSupport_withSNCSEQ.dbd
 # DBDS += $(APPSRC)/calcSupport_withSSCAN.dbd

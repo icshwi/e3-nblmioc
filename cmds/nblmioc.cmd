@@ -4,26 +4,49 @@
 require nblmioc, master
 
 # autosave
-require autosave, 5.9.0
+require autosave, 5.10.0
 # save and restore a specific config
 require saverestore, master
 require nblmplc, master
-require nblmapp, develop
-require nds3epics,1.0.0
-require modbus,2.11.0p
-require s7plc,1.4.0p
+require nblmpower, master
+require mrfioc2, 2.2.0-rc7
+require nblmapp, master
+#require nds3epics,1.0.0
+#require modbus,2.11.0p
+#require s7plc,1.4.0p
 
+# Constant definitions
+epicsEnvSet(TRIG0_PV,           "$(TRIG0_PV=MTCA-EVR:EvtECnt-I.TIME)")
+#epicsEnvSet(TIMESTAMP,          "null")
+epicsEnvSet(TIMESTAMP,          "$(TIMESTAMP=MTCA-EVR:Time-I.TIME)")
+epicsEnvSet(PREFIX,             "$(PREFIX=FEBx)")
 epicsEnvSet(ACQ_IFC1410,    "ICS tag 345")
 epicsEnvSet(AREA,           "$(AREA=CEA)")  # default prefix is "CEA"
 epicsEnvSet(DEVICE,         "PBI-nBLM")
 epicsEnvSet(HV_LV_PREFIX,   "SY4527")
+# The tens of AMC gives the card in slot 3
+epicsEnvSet(AMC1,               "$(AMC1=130)")
+# The tens of AMC gives the card in slot 5
+epicsEnvSet(AMC2,               "$(AMC2=150)")
+##################### Only one board ##############################
+#epicsEnvSet(AMCs,               "$(AMC1)")
+################# or with several IFC1410 #########################
+epicsEnvSet(AMCs,               "$(AMC1)_$(AMC2)")
+###################################################################
+epicsEnvSet("IOC", "MTCA")
+epicsEnvSet("DEV", "EVR")
+# Not use in this script, but it is needed for the expansion. 
+epicsEnvSet("MainEvtCODE" "14")
 
-#### hardware connection layer
+
+########################################################################################################
+#### hardware connection layer: What we find in e3-nblmpower, e3-nblmplc, e3-nblmapp and e3-mrfioc2 ####
+########################################################################################################
 
 #############################################################################################################################################################################################################
 ### CAEN power supply (HV + LV)
 #############################################################################################################################################################################################################
-
+# NEXT LINES ARE COPIED FROM e3-nblmpower/cmds/nblmpower.cmd
 # CAEN crate (touchscreen)
 dbLoadRecords("CAEN_SY4527_crate.template", "AREA=${AREA}, DEVICE=${DEVICE}, HV_LV_PREFIX="${HV_LV_PREFIX}", CRATE_IDX="1"")       # first crate
 ## HV
@@ -38,7 +61,6 @@ dbLoadRecords("CAEN_SY4527_crate.template", "AREA=${AREA}, DEVICE=${DEVICE}, HV_
 dbLoadRecords("CAEN_HV_A7030.db", "AREA=${AREA}, DEVICE=${DEVICE}, HV_LV_PREFIX="${HV_LV_PREFIX}", CRATE_IDX="2", HV_SLOT="15"")
 # #LV
 #############################################################################################################################################################################################################
-
 
 
 #############################################################################################################################################################################################################
@@ -131,34 +153,42 @@ dbLoadRecords("iocEss_nblm.db")
 #############################################################################################################################################################################################################
 
 
-
+#############################################################################################################################################################################################################
+# configure EVR
+#############################################################################################################################################################################################################
+iocshLoad("$(mrfioc2_DIR)/evr-mtca-300.iocsh", "S=$(IOC), DEV=$(DEV), PCIID=08:00.0")
+#############################################################################################################################################################################################################
 
 
 #############################################################################################################################################################################################################
 ### ACQ
 #############################################################################################################################################################################################################
 # Constant definitions
-epicsEnvSet(PREFIX,             "$(PREFIX=FEBx)")
-# Already defined at the top of the file. epicsEnvSet(DEVICE,             "$(DEVICE=PBI-nBLM)")
 epicsEnvSet(EPICS_CA_MAX_ARRAY_BYTES, 400000000)
-
 # Set maximum number of samples: SCOPE_RAW_DATA_SAMPLES_MAX for the scope in the code
 epicsEnvSet(NELM, 5000)
-
 var onAMCOne 1
+ndsCreateDevice(nblm, ${PREFIX}, chGrp=${DEVICE}, grpNb=${AMCs}, MB_DOD="64")
 
-ndsCreateDevice(ifc14, ${PREFIX}, card=0, fmc=1, chGrp=${DEVICE})
+dbLoadRecords("trigTime.db", "TIMESTAMP=${TRIG0_PV}")
 
-dbLoadRecords("nblm_group.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}")
-dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE},CH_ID=CH0, NELM=${NELM}")
-dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE},CH_ID=CH1, NELM=${NELM}")
-dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE},CH_ID=CH2, NELM=${NELM}")
-dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE},CH_ID=CH3, NELM=${NELM}")
-dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE},CH_ID=CH4, NELM=${NELM}")
-dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE},CH_ID=CH5, NELM=${NELM}")
+dbLoadRecords("nblm_group.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC1},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC1},CH_ID=CH0, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC1},CH_ID=CH1, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC1},CH_ID=CH2, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC1},CH_ID=CH3, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC1},CH_ID=CH4, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC1},CH_ID=CH5, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
+
+################# Test with a 2nd IFC1410 #########################
+dbLoadRecords("nblm_group.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC2},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC2},CH_ID=CH0, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC2},CH_ID=CH1, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC2},CH_ID=CH2, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC2},CH_ID=CH3, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC2},CH_ID=CH4, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
+dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE}${AMC2},CH_ID=CH5, NELM=${NELM},TIMESTAMP=${TIMESTAMP}")
 #############################################################################################################################################################################################################
-
-
 
 
 
@@ -167,32 +197,12 @@ dbLoadRecords("nblm.db", "PREFIX=${PREFIX},CH_GRP_ID=${DEVICE},CH_ID=CH5, NELM=$
 #############################################################################################################################################################################################################
 ### nblm database: LV + gas + ACQ monitoring + 2 HV channel control + CAEN SY4527 and boards status
 epicsEnvSet(AREA,               "$(AREA=CEA)")
-epicsEnvSet(TYPE,               "SLOW") # FAST
-epicsEnvSet(NBLM_IDX,           "1")
 # ACQ (RO)
-epicsEnvSet(ACQ_AREA,           "FEBx")
 epicsEnvSet(ACQ_DEVICE,         "$(DEVICE)")
-epicsEnvSet(ACQ_CH,             "CH0")
-# CAEN crate
-epicsEnvSet(CRATE_IDX,           "1")
-# HV (R/W)
-epicsEnvSet(HV_SLOT,            "02")
-epicsEnvSet(HV_MESH_CH,         "000")
-epicsEnvSet(HV_DRIFT_ch,        "001")
-# LV (RO) 
-epicsEnvSet(LV_POS_SLOT,        "10")
-epicsEnvSet(LV_POS_CH,          "000")  # +8V
-epicsEnvSet(LV_NEG_SLOT,        "10")
-epicsEnvSet(LV_NEG_CH,          "001")  # -8V
 # gas (RO)
-epicsEnvSet(GAS_AREA,           "FEB-050Row")
-epicsEnvSet(GAS_LINE,           "1")
-epicsEnvSet(GAS_DEVICE,         "PBI-PLC-Line") # FEB-050Row:PBI-PLC-Line1
-epicsEnvSet(GAS_DEVICE_INT_VAR, "PBI-FT-A")     # FEB-050Row:PBI-FT-A10:FlwR, FEB-050Row:PBI-FT-A19:FlwR
-dbLoadRecords("nblm_detector.db", "AREA=${AREA}, DEVICE=${DEVICE}, NBLM_IDX=${NBLM_IDX}, TYPE=${TYPE},  CRATE_IDX=${CRATE_IDX}, HV_SLOT="${HV_SLOT}", HV_MESH_CH="${HV_MESH_CH}", HV_DRIFT_CH="${HV_DRIFT_ch}", LV_POS_SLOT=${LV_POS_SLOT}, LV_NEG_SLOT=${LV_NEG_SLOT}, LV_POS_CH=${LV_POS_CH}, LV_NEG_CH=${LV_NEG_CH}, GAS_AREA=${GAS_AREA}, GAS_DEVICE=${GAS_DEVICE}, GAS_DEVICE_INT_VAR=${GAS_DEVICE_INT_VAR}, GAS_LINE=${GAS_LINE}, ACQ_AREA=${ACQ_AREA}, ACQ_DEVICE=${ACQ_DEVICE}, ACQ_IFC1410=${ACQ_IFC1410}, ACQ_CH=${ACQ_CH}") 
+dbLoadRecords("nblm_detector.db", "AREA=${AREA}, DEVICE=${DEVICE}, ACQ_DEVICE=${ACQ_DEVICE}, ACQ_IFC1410=${ACQ_IFC1410}") 
 # fast
 #############################################################################################################################################################################################################
-
 
 
 #############################################################################################################################################################################################################
@@ -202,6 +212,8 @@ dbLoadRecords("SaveRestoreC.template", PREFIX="${AREA}:${DEVICE}-saveRestore-HV"
 dbLoadRecords("SaveRestoreC.template", PREFIX="${AREA}:${DEVICE}-saveRestore-LV")
 dbLoadRecords("SaveRestoreC.template", PREFIX="${AREA}:${DEVICE}-saveRestore-GAS")
 dbLoadRecords("SaveRestoreC.template", PREFIX="${AREA}:${DEVICE}-saveRestore-ND")
+#############################################################################################################################################################################################################
+
 
 #############################################################################################################################################################################################################
 # configure autosave
@@ -242,8 +254,9 @@ create_monitor_set("nblm_autosave_hardware_abstraction_layer.req", 5, "AREA=${AR
 #############################################################################################################################################################################################################
 
 
-
+###################################################################
 ## saveRestore paths
+###################################################################
 # HV
 dbpf ${AREA}:${DEVICE}-saveRestore-HV:PathReq "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/HV_config.req"
 dbpf ${AREA}:${DEVICE}-saveRestore-HV:PathSav "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/HV_config.sav"
@@ -256,10 +269,28 @@ dbpf ${AREA}:${DEVICE}-saveRestore-GAS:PathSav "/home/ceauser/e3-3.15.5/e3-nblmi
 # neutron detection
 dbpf ${AREA}:${DEVICE}-saveRestore-ND:PathReq "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/ND_config.req"
 dbpf ${AREA}:${DEVICE}-saveRestore-ND:PathSav "/home/ceauser/e3-3.15.5/e3-nblmioc/m-epics-nblm/misc/saveAndRestore/ND_config.sav"
+###################################################################
 
 
-# neutron detection and scope configuration
-# Pulse processing
-dbpf ${PREFIX}:${DEVICE}-STAT "ON"
+###################################################################
+# Start acquisition threads
+###################################################################
+dbpf ${PREFIX}:${DEVICE}${AMC1}:STAT "ON"
+
+################# Test with a 2nd IFC1410 #########################
+dbpf ${PREFIX}:${DEVICE}${AMC2}:STAT "ON"
+###################################################################
+
+###################################################################
+# For EVR
+###################################################################
+dbpf "MTCA-EVR:Link-Clk-SP" 88.052
+dbpf "MTCA-EVR:DlyGen0-Width-SP" 4000
+dbpf "MTCA-EVR:DlyGen0-Evt-Trig0-SP" 14
+dbpf "MTCA-EVR:OutFP0-Src-Pulse-SP" "Pulser 0"
+dbpf "MTCA-EVR:OutBack0-Src-Pulse-SP" "Pulser 0"
+dbpf "MTCA-EVR:EvtE-SP.OUT" "@OBJ=EVR,Code=14"
+dbl > "${IOC}_PVs.list"
+###################################################################
 
 
