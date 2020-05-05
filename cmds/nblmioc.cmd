@@ -13,8 +13,8 @@ require nblmpower, master
 require mrfioc2, 2.2.0-rc7
 require nblmapp, master
 require nds3epics,1.0.1
-#require modbus,2.11.0p
-#require s7plc,1.4.0p
+require modbus,3.0.0
+require s7plc,1.4.1
 
 # Constant definitions
 epicsEnvSet(TRIG0_PV,           "$(TRIG0_PV=MTCA-EVR:EvtECnt-I.TIME)")
