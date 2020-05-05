@@ -3,6 +3,7 @@
 
 require nblmioc, master
 
+require ADSupport,1.9.0 ## for HDF5 library ##
 # autosave
 require autosave, 5.10.0
 # save and restore a specific config
@@ -11,7 +12,7 @@ require nblmplc, master
 require nblmpower, master
 require mrfioc2, 2.2.0-rc7
 require nblmapp, master
-#require nds3epics,1.0.0
+require nds3epics,1.0.1
 #require modbus,2.11.0p
 #require s7plc,1.4.0p
 
