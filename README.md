@@ -1,6 +1,5 @@
+# DEPRECATION NOTICE
 
-e3-nblmioc  
-======
-ESS Site-specific EPICS IOC Application : nblmioc
+## 2020-09-22
 
-In CSS the main opi to run is nblm.opi
+This remote has been deprecated. New target available at: https://gitlab.esss.lu.se/e3/bi/e3-nblmioc
